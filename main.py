@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from input_data_parser import InputDataParser
 import json
 from os import getenv
+from predictor import Predictor
 from sys import argv
 
 
@@ -21,7 +22,9 @@ def main(filename: str):
         raise RuntimeError('failed to parse input')
     input_data_parser = InputDataParser(cargo_spaces)
     params = input_data_parser.get_params(json_input)
-    print(params)
+    predictor = Predictor('finalized_model_RF.sav', 'finalized_scaler.sav', 'finalized_le.sav')
+    density_percent = predictor.predict_density_percent(params)
+    print(json.dumps({'density_percent': density_percent}, indent=4))
 
 
 if __name__ == '__main__':
